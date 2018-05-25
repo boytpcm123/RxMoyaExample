@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		1237EF8FEC8E29961B2EB981 /* Pods_RxMoyaExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F909E17D1CAE12DCDE1E6DA2 /* Pods_RxMoyaExample.framework */; };
 		B245D65820B8190E008F2DFF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B245D65720B8190E008F2DFF /* AppDelegate.swift */; };
-		B245D65A20B8190E008F2DFF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B245D65920B8190E008F2DFF /* ViewController.swift */; };
+		B245D65A20B8190E008F2DFF /* IssueListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B245D65920B8190E008F2DFF /* IssueListViewController.swift */; };
 		B245D65D20B8190E008F2DFF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B245D65B20B8190E008F2DFF /* Main.storyboard */; };
 		B245D65F20B8190F008F2DFF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B245D65E20B8190F008F2DFF /* Assets.xcassets */; };
 		B245D66220B8190F008F2DFF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B245D66020B8190F008F2DFF /* LaunchScreen.storyboard */; };
@@ -19,7 +19,7 @@
 		A2BE6FB233C39198D2465BAC /* Pods-RxMoyaExample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxMoyaExample.release.xcconfig"; path = "Pods/Target Support Files/Pods-RxMoyaExample/Pods-RxMoyaExample.release.xcconfig"; sourceTree = "<group>"; };
 		B245D65420B8190E008F2DFF /* RxMoyaExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RxMoyaExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B245D65720B8190E008F2DFF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		B245D65920B8190E008F2DFF /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		B245D65920B8190E008F2DFF /* IssueListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssueListViewController.swift; sourceTree = "<group>"; };
 		B245D65C20B8190E008F2DFF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B245D65E20B8190F008F2DFF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B245D66120B8190F008F2DFF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -79,7 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				B245D65720B8190E008F2DFF /* AppDelegate.swift */,
-				B245D65920B8190E008F2DFF /* ViewController.swift */,
+				B245D65920B8190E008F2DFF /* IssueListViewController.swift */,
 				B245D65B20B8190E008F2DFF /* Main.storyboard */,
 				B245D65E20B8190F008F2DFF /* Assets.xcassets */,
 				B245D66020B8190F008F2DFF /* LaunchScreen.storyboard */,
@@ -214,7 +214,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B245D65A20B8190E008F2DFF /* ViewController.swift in Sources */,
+				B245D65A20B8190E008F2DFF /* IssueListViewController.swift in Sources */,
 				B245D65820B8190E008F2DFF /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -362,7 +362,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = RxMoyaExample/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.studyapp.RxMoyaExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -377,7 +380,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = RxMoyaExample/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.studyapp.RxMoyaExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
