@@ -1,27 +1,23 @@
 import Foundation
+import Alamofire
 
 /// These functions are default mappings to `MoyaProvider`'s properties: endpoints, requests, manager, etc.
 public extension MoyaProvider {
-    public final class func defaultEndpointMapping(for target: Target) -> Endpoint {
+    public final class func defaultEndpointMapping(for target: Target) -> Endpoint<Target> {
         return Endpoint(
-            url: URL(target: target).absoluteString,
+            url: url(for: target).absoluteString,
             sampleResponseClosure: { .networkResponse(200, target.sampleData) },
             method: target.method,
-            task: target.task,
-            httpHeaderFields: target.headers
+            parameters: target.parameters,
+            parameterEncoding: target.parameterEncoding
         )
     }
 
-    public final class func defaultRequestMapping(for endpoint: Endpoint, closure: RequestResultClosure) {
-        do {
-            let urlRequest = try endpoint.urlRequest()
+    public final class func defaultRequestMapping(for endpoint: Endpoint<Target>, closure: RequestResultClosure) {
+        if let urlRequest = endpoint.urlRequest {
             closure(.success(urlRequest))
-        } catch MoyaError.requestMapping(let url) {
-            closure(.failure(MoyaError.requestMapping(url)))
-        } catch MoyaError.parameterEncoding(let error) {
-            closure(.failure(MoyaError.parameterEncoding(error)))
-        } catch {
-            closure(.failure(MoyaError.underlying(error, nil)))
+        } else {
+            closure(.failure(MoyaError.requestMapping(endpoint.url)))
         }
     }
 
@@ -32,5 +28,16 @@ public extension MoyaProvider {
         let manager = Manager(configuration: configuration)
         manager.startRequestsImmediately = false
         return manager
+    }
+
+    // When a TargetType's path is empty, URL.appendingPathComponent may introduce trailing /, which may not be wanted in some cases
+    // See: https://github.com/Moya/Moya/pull/1053
+    // And: https://github.com/Moya/Moya/issues/1049
+    private final class func url(for target: Target) -> URL {
+        if target.path.isEmpty {
+            return target.baseURL
+        }
+
+        return target.baseURL.appendingPathComponent(target.path)
     }
 }

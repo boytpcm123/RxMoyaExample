@@ -6,7 +6,11 @@
 //  Copyright © 2016 Krunoslav Zaher. All rights reserved.
 //
 
-import RxSwift
+import Foundation
+
+#if !RX_NO_MODULE
+    import RxSwift
+#endif
 
 #if os(iOS) || os(tvOS)
     import UIKit

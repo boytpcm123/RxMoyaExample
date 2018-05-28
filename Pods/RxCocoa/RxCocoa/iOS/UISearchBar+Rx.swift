@@ -8,25 +8,36 @@
 
 #if os(iOS) || os(tvOS)
 
+import Foundation
+#if !RX_NO_MODULE
 import RxSwift
+#endif
 import UIKit
+
+
+#if os(iOS)
+    extension UISearchBar {
+        /// Factory method that enables subclasses to implement their own `delegate`.
+        ///
+        /// - returns: Instance of delegate proxy that wraps `delegate`.
+        public func createRxDelegateProxy() -> RxSearchBarDelegateProxy {
+            return RxSearchBarDelegateProxy(parentObject: self)
+        }
+        
+    }
+#endif
 
 extension Reactive where Base: UISearchBar {
 
     /// Reactive wrapper for `delegate`.
     ///
     /// For more information take a look at `DelegateProxyType` protocol documentation.
-    public var delegate: DelegateProxy<UISearchBar, UISearchBarDelegate> {
-        return RxSearchBarDelegateProxy.proxy(for: base)
-    }
-
-    /// Reactive wrapper for `text` property.
-    public var text: ControlProperty<String?> {
-        return value
+    public var delegate: DelegateProxy {
+        return RxSearchBarDelegateProxy.proxyForObject(base)
     }
     
     /// Reactive wrapper for `text` property.
-    public var value: ControlProperty<String?> {
+    public var text: ControlProperty<String?> {
         let source: Observable<String?> = Observable.deferred { [weak searchBar = self.base as UISearchBar] () -> Observable<String?> in
             let text = searchBar?.text
             
@@ -37,7 +48,7 @@ extension Reactive where Base: UISearchBar {
                     .startWith(text)
         }
 
-        let bindingObserver = Binder(self.base) { (searchBar, text: String?) in
+        let bindingObserver = UIBindingObserver(UIElement: self.base) { (searchBar, text: String?) in
             searchBar.text = text
         }
         
@@ -56,7 +67,7 @@ extension Reactive where Base: UISearchBar {
                 .startWith(index)
         }
         
-        let bindingObserver = Binder(self.base) { (searchBar, index: Int) in
+        let bindingObserver = UIBindingObserver(UIElement: self.base) { (searchBar, index: Int) in
             searchBar.selectedScopeButtonIndex = index
         }
         

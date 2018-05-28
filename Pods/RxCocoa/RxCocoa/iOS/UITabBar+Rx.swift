@@ -7,9 +7,12 @@
 //
 
 #if os(iOS) || os(tvOS)
-
+import Foundation
 import UIKit
+
+#if !RX_NO_MODULE
 import RxSwift
+#endif
 
 /**
  iOS only
@@ -17,7 +20,7 @@ import RxSwift
 #if os(iOS)
 extension Reactive where Base: UITabBar {
 
-    /// Reactive wrapper for `delegate` message `tabBar(_:willBeginCustomizing:)`.
+    /// Reactive wrapper for `delegate` message `tabBar:willBeginCustomizingItems:`.
     public var willBeginCustomizing: ControlEvent<[UITabBarItem]> {
         
         let source = delegate.methodInvoked(#selector(UITabBarDelegate.tabBar(_:willBeginCustomizing:)))
@@ -28,7 +31,7 @@ extension Reactive where Base: UITabBar {
         return ControlEvent(events: source)
     }
 
-    /// Reactive wrapper for `delegate` message `tabBar(_:didBeginCustomizing:)`.
+    /// Reactive wrapper for `delegate` message `tabBar:didBeginCustomizingItems:`.
     public var didBeginCustomizing: ControlEvent<[UITabBarItem]> {
         let source = delegate.methodInvoked(#selector(UITabBarDelegate.tabBar(_:didBeginCustomizing:)))
             .map { a in
@@ -38,7 +41,7 @@ extension Reactive where Base: UITabBar {
         return ControlEvent(events: source)
     }
 
-    /// Reactive wrapper for `delegate` message `tabBar(_:willEndCustomizing:changed:)`.
+    /// Reactive wrapper for `delegate` message `tabBar:willEndCustomizingItems:changed:`.
     public var willEndCustomizing: ControlEvent<([UITabBarItem], Bool)> {
         let source = delegate.methodInvoked(#selector(UITabBarDelegate.tabBar(_:willEndCustomizing:changed:)))
             .map { (a: [Any]) -> (([UITabBarItem], Bool)) in
@@ -50,7 +53,7 @@ extension Reactive where Base: UITabBar {
         return ControlEvent(events: source)
     }
 
-    /// Reactive wrapper for `delegate` message `tabBar(_:didEndCustomizing:changed:)`.
+    /// Reactive wrapper for `delegate` message `tabBar:didEndCustomizingItems:changed:`.
     public var didEndCustomizing: ControlEvent<([UITabBarItem], Bool)> {
         let source = delegate.methodInvoked(#selector(UITabBarDelegate.tabBar(_:didEndCustomizing:changed:)))
             .map { (a: [Any]) -> (([UITabBarItem], Bool)) in
@@ -68,16 +71,26 @@ extension Reactive where Base: UITabBar {
 /**
  iOS and tvOS
  */
+extension UITabBar {
     
+    /// Factory method that enables subclasses to implement their own `delegate`.
+    ///
+    /// - returns: Instance of delegate proxy that wraps `delegate`.
+    public func createRxDelegateProxy() -> RxTabBarDelegateProxy {
+        return RxTabBarDelegateProxy(parentObject: self)
+    }
+
+}
+
 extension Reactive where Base: UITabBar {
     /// Reactive wrapper for `delegate`.
     ///
     /// For more information take a look at `DelegateProxyType` protocol documentation.
-    public var delegate: DelegateProxy<UITabBar, UITabBarDelegate> {
-        return RxTabBarDelegateProxy.proxy(for: base)
+    public var delegate: DelegateProxy {
+        return RxTabBarDelegateProxy.proxyForObject(base)
     }
 
-    /// Reactive wrapper for `delegate` message `tabBar(_:didSelect:)`.
+    /// Reactive wrapper for `delegate` message `tabBar:didSelectItem:`.
     public var didSelectItem: ControlEvent<UITabBarItem> {
         let source = delegate.methodInvoked(#selector(UITabBarDelegate.tabBar(_:didSelect:)))
             .map { a in

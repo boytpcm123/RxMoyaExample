@@ -6,9 +6,10 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-import class Foundation.NSNull
-
+import Foundation
+#if !RX_NO_MODULE
 import RxSwift
+#endif
 #if os(iOS)
     import UIKit
 #endif
@@ -47,7 +48,7 @@ extension RxCocoaError {
         case let .itemsNotYetBound(object):
             return "Data source is set, but items are not yet bound to user interface for `\(object)`."
         case let .invalidPropertyName(object, propertyName):
-            return "Object `\(object)` doesn't have a property named `\(propertyName)`."
+            return "Object `\(object)` dosn't have a property named `\(propertyName)`."
         case let .invalidObjectOnKeyPath(object, sourceObject, propertyName):
             return "Unobservable object `\(object)` was observed as `\(propertyName)` of `\(sourceObject)`."
         case .errorDuringSwizzling:
@@ -62,8 +63,8 @@ extension RxCocoaError {
 
 // MARK: Error binding policies
 
-func bindingError(_ error: Swift.Error) {
-    let error = "Binding error: \(error)"
+func bindingErrorToInterface(_ error: Swift.Error) {
+    let error = "Binding error to UI: \(error)"
 #if DEBUG
     rxFatalError(error)
 #else
@@ -71,22 +72,14 @@ func bindingError(_ error: Swift.Error) {
 #endif
 }
 
-/// Swift does not implement abstract methods. This method is used as a runtime check to ensure that methods which intended to be abstract (i.e., they should be implemented in subclasses) are not called directly on the superclass.
-func rxAbstractMethod(message: String = "Abstract method", file: StaticString = #file, line: UInt = #line) -> Swift.Never {
-    rxFatalError(message, file: file, line: line)
+// MARK: Abstract methods
+
+func rxAbstractMethodWithMessage(_ message: String) -> Swift.Never  {
+    rxFatalError(message)
 }
 
-func rxFatalError(_ lastMessage: @autoclosure () -> String, file: StaticString = #file, line: UInt = #line) -> Swift.Never  {
-    // The temptation to comment this line is great, but please don't, it's for your own good. The choice is yours.
-    fatalError(lastMessage(), file: file, line: line)
-}
-
-func rxFatalErrorInDebug(_ lastMessage: @autoclosure () -> String, file: StaticString = #file, line: UInt = #line) {
-    #if DEBUG
-        fatalError(lastMessage(), file: file, line: line)
-    #else
-        print("\(file):\(line): \(lastMessage())")
-    #endif
+func rxAbstractMethod() -> Swift.Never  {
+    rxFatalError("Abstract method")
 }
 
 // MARK: casts or fatal error
@@ -145,8 +138,11 @@ let delegateNotSet = "Delegate not set"
 
 // MARK: Shared with RxSwift
 
+#if !RX_NO_MODULE
+
 func rxFatalError(_ lastMessage: String) -> Never  {
     // The temptation to comment this line is great, but please don't, it's for your own good. The choice is yours.
     fatalError(lastMessage)
 }
 
+#endif

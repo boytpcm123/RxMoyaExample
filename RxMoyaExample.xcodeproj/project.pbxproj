@@ -13,6 +13,8 @@
 		B245D65D20B8190E008F2DFF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B245D65B20B8190E008F2DFF /* Main.storyboard */; };
 		B245D65F20B8190F008F2DFF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B245D65E20B8190F008F2DFF /* Assets.xcassets */; };
 		B245D66220B8190F008F2DFF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B245D66020B8190F008F2DFF /* LaunchScreen.storyboard */; };
+		B2619BC520B9C920003FD0D4 /* Mappable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2619BC420B9C920003FD0D4 /* Mappable.swift */; };
+		B2A0686A20B8603E00753997 /* GithubEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0686920B8603E00753997 /* GithubEndpoint.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		B245D65E20B8190F008F2DFF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B245D66120B8190F008F2DFF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B245D66320B8190F008F2DFF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B2619BC420B9C920003FD0D4 /* Mappable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mappable.swift; sourceTree = "<group>"; };
+		B2A0686920B8603E00753997 /* GithubEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GithubEndpoint.swift; sourceTree = "<group>"; };
 		E541C9EBCA79A1F6DB09BAEA /* Pods-RxMoyaExample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxMoyaExample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RxMoyaExample/Pods-RxMoyaExample.debug.xcconfig"; sourceTree = "<group>"; };
 		F909E17D1CAE12DCDE1E6DA2 /* Pods_RxMoyaExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxMoyaExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -84,6 +88,8 @@
 				B245D65E20B8190F008F2DFF /* Assets.xcassets */,
 				B245D66020B8190F008F2DFF /* LaunchScreen.storyboard */,
 				B245D66320B8190F008F2DFF /* Info.plist */,
+				B2A0686920B8603E00753997 /* GithubEndpoint.swift */,
+				B2619BC420B9C920003FD0D4 /* Mappable.swift */,
 			);
 			path = RxMoyaExample;
 			sourceTree = "<group>";
@@ -215,7 +221,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				B245D65A20B8190E008F2DFF /* IssueListViewController.swift in Sources */,
+				B2A0686A20B8603E00753997 /* GithubEndpoint.swift in Sources */,
 				B245D65820B8190E008F2DFF /* AppDelegate.swift in Sources */,
+				B2619BC520B9C920003FD0D4 /* Mappable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

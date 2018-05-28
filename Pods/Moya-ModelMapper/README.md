@@ -1,4 +1,5 @@
 # Moya-ModelMapper
+============
 
 [![CocoaPods](https://img.shields.io/cocoapods/v/Moya-ModelMapper.svg)](https://github.com/sunshinejr/Moya-ModelMapper)
 
@@ -10,17 +11,17 @@
 ## CocoaPods
 
 ```
-pod 'Moya-ModelMapper', '7.1.0'
+pod 'Moya-ModelMapper', '4.0.0'
 ```
 
 The subspec if you want to use the bindings over RxSwift.
 ```
-pod 'Moya-ModelMapper/RxSwift', '7.1.0'
+pod 'Moya-ModelMapper/RxSwift', '4.0.0'
 ```
 
 And the subspec if you want to use the bindings over ReactiveSwift.
 ```
-pod 'Moya-ModelMapper/ReactiveSwift', '7.1.0'
+pod 'Moya-ModelMapper/ReactiveCocoa', '4.0.0'
 ```
 
 ## Carthage
@@ -28,20 +29,10 @@ pod 'Moya-ModelMapper/ReactiveSwift', '7.1.0'
 Specify in Cartfile:
 
 ```
-github "sunshinejr/Moya-ModelMapper" "7.1.0"
+github "sunshinejr/Moya-ModelMapper"
 ```
 
 Carthage users can point to this repository and use whichever generated framework they'd like, Moya-ModelMapper, RxMoya-ModelMapper, or ReactiveMoya-ModelMapper.
-
-## Swift Package Manager
-
-Add the following as a dependency to your `Package.swift`.
-
-```swift
-.package(url: "https://github.com/sunshinejr/Moya-ModelMapper.git", .exact("7.1.0"))
-```
-
-The bindings are available through `Moya_ModelMapper` module. If you are interested in reactive extensions, use `ReactiveMoya_ModelMapper` or `RxMoya_ModelMapper` respectively.
 
 # Usage
 
@@ -68,20 +59,19 @@ struct Repository: Mappable {
 
 Then you have methods that extends the response from Moya. These methods are:
 ```swift
-map(to:)
-map(to:keyPath:)
-compactMap(to:)
-compactMap(to:keyPath)
+mapObject()
+mapObject(withKeyPath:)
+mapArray()
+mapArray(withKeyPath:)
 ```
 
-While using `map(to:)` tries to map whole response data to object/array,
-with `map(to:keyPath:)` you can specify nested object in a response to
-fetch. For example `map(to: User.self, keyPath: "data.response.user")` will go through
+While using `mapObject()` tries to map whole response data to object,
+with `mapObject(withKeyPath:)` you can specify nested object in a response to
+fetch. For example `mapObject(withKeyPath: "data.response.user")` will go through
 dictionary of data, through dictionary of response to dictionary of user, which it
-will parse. `compactMap` is a variant of array `map` that doesn't fail the whole operation
-if one of the objects fails, it will just remove the object from the array. 
-`RxSwift` and `ReactiveCocoa` extensions also have all of the methods, but `RxSwift` have 
-optional mapping additionally. See examples below, or in a Demo project.
+will parse. `RxSwift` and `ReactiveCocoa` extensions also have all of the methods,
+but `RxSwift` have optional mapping additionally. See examples below, or in a Demo
+project.
 
 ## 1. Normal usage (without RxSwift or ReactiveCocoa)
 
@@ -90,7 +80,7 @@ provider = MoyaProvider<GitHub>(endpointClosure: endpointClosure)
 provider.request(GitHub.repos("mjacko")) { (result) in
     if case .success(let response) = result {
         do {
-            let repos = try response.map(to: [Repository].self)
+            let repos = try response.mapArray() as [Repository]
             print(repos)
         } catch Error.jsonMapping(let error) {
             print(try? error.mapString())
@@ -103,15 +93,17 @@ provider.request(GitHub.repos("mjacko")) { (result) in
 
 ## 2. RxSwift
 ```swift
-provider = MoyaProvider<GitHub>(endpointClosure: endpointClosure)
-provider.rx.request(GitHub.repo("Moya/Moya"))
-    .map(to: User.self, keyPath: "owner")
+provider = RxMoyaProvider<GitHub>(endpointClosure: endpointClosure)
+provider
+    .request(GitHub.repo("Moya/Moya"))
+    .mapObject(User.self, keyPath: "owner")
     .subscribe { event in
         switch event {
-        case .success(let user):
+        case .next(let user):
             print(user)
         case .error(let error):
             print(error)
+        default: break
         }
 }
 ```
@@ -119,26 +111,29 @@ provider.rx.request(GitHub.repo("Moya/Moya"))
 Additionally, modules for `RxSwift` contains optional mappings. It basically means that if the mapping fails, mapper doesn't throw errors but returns nil. For instance:
 
 ```swift
-provider = MoyaProvider<GitHub>(endpointClosure: endpointClosure)
-provider.rx.request(GitHub.repos("mjacko"))
-    .mapOptional(to: [Repository].self)
+provider = RxMoyaProvider<GitHub>(endpointClosure: endpointClosure)
+provider
+    .request(GitHub.repos("mjacko"))
+    .mapArrayOptional(Repository.self)
     .subscribe { event in
         switch event {
-        case .success(let repos):
+        case .next(let repos):
             // Here we can have either nil or [Repository] object.
             print(repos)
         case .error(let error):
             print(error)
+        default: break
         }
 }
 ```
 
 
-## 3. ReactiveSwift
+## 3. ReactiveCocoa
 ```swift
-provider = MoyaProvider<GitHub>(endpointClosure: endpointClosure)
-provider.reactive.request(GitHub.repos("mjacko"))
-    .map(to: [Repository].self)
+provider = ReactiveCocoaMoyaProvider<GitHub>(endpointClosure: endpointClosure)
+provider
+    .request(GitHub.repos("mjacko"))
+    .mapArray(Repository.self)
     .observeOn(UIScheduler())
     .start { event in
         switch event {

@@ -6,9 +6,10 @@
 //  Copyright © 2015 Krunoslav Zaher. All rights reserved.
 //
 
-import class Foundation.NSObject
-
+import Foundation
+#if !RX_NO_MODULE
 import RxSwift
+#endif
 
 class RxTarget : NSObject
                , Disposable {

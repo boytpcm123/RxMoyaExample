@@ -18,11 +18,11 @@
 
 @end
 
-static NSMutableDictionary *voidSelectorsPerClass = nil;
+static NSMutableDictionary *forwardableSelectorsPerClass = nil;
 
 @implementation _RXDelegateProxy
 
-+(NSSet*)collectVoidSelectorsForProtocol:(Protocol *)protocol {
++(NSSet*)collectSelectorsForProtocol:(Protocol *)protocol {
     NSMutableSet *selectors = [NSMutableSet set];
 
     unsigned int protocolMethodCount = 0;
@@ -41,7 +41,7 @@ static NSMutableDictionary *voidSelectorsPerClass = nil;
     Protocol * __unsafe_unretained * pSubprotocols = protocol_copyProtocolList(protocol, &numberOfBaseProtocols);
 
     for (unsigned int i = 0; i < numberOfBaseProtocols; ++i) {
-        [selectors unionSet:[self collectVoidSelectorsForProtocol:pSubprotocols[i]]];
+        [selectors unionSet:[self collectSelectorsForProtocol:pSubprotocols[i]]];
     }
     
     free(pSubprotocols);
@@ -51,11 +51,11 @@ static NSMutableDictionary *voidSelectorsPerClass = nil;
 
 +(void)initialize {
     @synchronized (_RXDelegateProxy.class) {
-        if (voidSelectorsPerClass == nil) {
-            voidSelectorsPerClass = [[NSMutableDictionary alloc] init];
+        if (forwardableSelectorsPerClass == nil) {
+            forwardableSelectorsPerClass = [[NSMutableDictionary alloc] init];
         }
 
-        NSMutableSet *voidSelectors = [NSMutableSet set];
+        NSMutableSet *allowedSelectors = [NSMutableSet set];
 
 #define CLASS_HIERARCHY_MAX_DEPTH 100
 
@@ -70,8 +70,8 @@ static NSMutableDictionary *voidSelectorsPerClass = nil;
             Protocol *__unsafe_unretained *pProtocols = class_copyProtocolList(targetClass, &count);
             
             for (unsigned int i = 0; i < count; i++) {
-                NSSet *selectorsForProtocol = [self collectVoidSelectorsForProtocol:pProtocols[i]];
-                [voidSelectors unionSet:selectorsForProtocol];
+                NSSet *selectorsForProtocol = [self collectSelectorsForProtocol:pProtocols[i]];
+                [allowedSelectors unionSet:selectorsForProtocol];
             }
             
             free(pProtocols);
@@ -84,7 +84,7 @@ static NSMutableDictionary *voidSelectorsPerClass = nil;
 #endif
         }
         
-        voidSelectorsPerClass[CLASS_VALUE(self)] = voidSelectors;
+        forwardableSelectorsPerClass[CLASS_VALUE(self)] = allowedSelectors;
     }
 }
 
@@ -106,12 +106,18 @@ static NSMutableDictionary *voidSelectorsPerClass = nil;
     return [super respondsToSelector:selector];
 }
 
--(BOOL)voidDelegateMethodsContain:(SEL)selector {
+-(BOOL)canRespondToSelector:(SEL)selector {
     @synchronized(_RXDelegateProxy.class) {
-        NSSet *voidSelectors = voidSelectorsPerClass[CLASS_VALUE(self.class)];
-        NSAssert(voidSelectors != nil, @"Set of allowed methods not initialized");
-        return [voidSelectors containsObject:SEL_VALUE(selector)];
+        NSSet *allowedMethods = forwardableSelectorsPerClass[CLASS_VALUE(self.class)];
+        NSAssert(allowedMethods != nil, @"Set of allowed methods not initialized");
+        return [allowedMethods containsObject:SEL_VALUE(selector)];
     }
+}
+
+-(BOOL)respondsToSelector:(SEL)aSelector {
+    return [super respondsToSelector:aSelector]
+    || [self._forwardToDelegate respondsToSelector:aSelector]
+    || [self canRespondToSelector:aSelector];
 }
 
 -(void)forwardInvocation:(NSInvocation *)anInvocation {

@@ -9,10 +9,13 @@
 #if os(iOS) || os(tvOS)
 
 import UIKit
+#if !RX_NO_MODULE
 import RxSwift
+#endif
+
 
 // This should be only used from `MainScheduler`
-final class GestureTarget<Recognizer: UIGestureRecognizer>: RxTarget {
+class GestureTarget<Recognizer: UIGestureRecognizer>: RxTarget {
     typealias Callback = (Recognizer) -> Void
     
     let selector = #selector(ControlTarget.eventHandler(_:))
@@ -34,7 +37,7 @@ final class GestureTarget<Recognizer: UIGestureRecognizer>: RxTarget {
         }
     }
     
-    @objc func eventHandler(_ sender: UIGestureRecognizer) {
+    func eventHandler(_ sender: UIGestureRecognizer!) {
         if let callback = self.callback, let gestureRecognizer = self.gestureRecognizer {
             callback(gestureRecognizer)
         }

@@ -6,16 +6,20 @@
 //  Copyright © 2016 Krunoslav Zaher. All rights reserved.
 //
 
-#if os(iOS) || os(tvOS)
+import Foundation
 
-    import UIKit
-    import RxSwift
+#if os(iOS)
+  import UIKit
+
+#if !RX_NO_MODULE
+  import RxSwift
+#endif
 
     extension Reactive where Base: UIViewController {
 
         /// Bindable sink for `title`.
-        public var title: Binder<String> {
-            return Binder(self.base) { viewController, title in
+        public var title: UIBindingObserver<Base, String> {
+            return UIBindingObserver(UIElement: self.base) { viewController, title in
                 viewController.title = title
             }
         }

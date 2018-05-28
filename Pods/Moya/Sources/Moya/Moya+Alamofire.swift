@@ -18,7 +18,7 @@ public typealias JSONEncoding = Alamofire.JSONEncoding
 public typealias URLEncoding = Alamofire.URLEncoding
 public typealias PropertyListEncoding = Alamofire.PropertyListEncoding
 
-/// Multipart form.
+/// Multipart form
 public typealias RequestMultipartFormData = Alamofire.MultipartFormData
 
 /// Multipart form data encoding result.
@@ -32,7 +32,6 @@ extension Request: RequestType { }
 public final class CancellableToken: Cancellable, CustomDebugStringConvertible {
     let cancelAction: () -> Void
     let request: Request?
-
     public fileprivate(set) var isCancelled = false
 
     fileprivate var lock: DispatchSemaphore = DispatchSemaphore(value: 1)
@@ -57,7 +56,6 @@ public final class CancellableToken: Cancellable, CustomDebugStringConvertible {
         }
     }
 
-    /// A textual representation of this instance, suitable for debugging.
     public var debugDescription: String {
         guard let request = self.request else {
             return "Empty Request"
@@ -70,20 +68,20 @@ public final class CancellableToken: Cancellable, CustomDebugStringConvertible {
 internal typealias RequestableCompletion = (HTTPURLResponse?, URLRequest?, Data?, Swift.Error?) -> Void
 
 internal protocol Requestable {
-    func response(callbackQueue: DispatchQueue?, completionHandler: @escaping RequestableCompletion) -> Self
+    func response(queue: DispatchQueue?, completionHandler: @escaping RequestableCompletion) -> Self
 }
 
 extension DataRequest: Requestable {
-    internal func response(callbackQueue: DispatchQueue?, completionHandler: @escaping RequestableCompletion) -> Self {
-        return response(queue: callbackQueue) { handler  in
+    internal func response(queue: DispatchQueue?, completionHandler: @escaping RequestableCompletion) -> Self {
+        return response(queue: queue) { handler  in
             completionHandler(handler.response, handler.request, handler.data, handler.error)
         }
     }
 }
 
 extension DownloadRequest: Requestable {
-    internal func response(callbackQueue: DispatchQueue?, completionHandler: @escaping RequestableCompletion) -> Self {
-        return response(queue: callbackQueue) { handler  in
+    internal func response(queue: DispatchQueue?, completionHandler: @escaping RequestableCompletion) -> Self {
+        return response(queue: queue) { handler  in
             completionHandler(handler.response, handler.request, nil, handler.error)
         }
     }

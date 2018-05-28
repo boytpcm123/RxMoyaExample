@@ -6,16 +6,20 @@
 //  Copyright © 2016 Krunoslav Zaher. All rights reserved.
 //
 
-#if os(iOS)
+import Foundation
 
+#if os(iOS)
     import UIKit
+
+#if !RX_NO_MODULE
     import RxSwift
+#endif
 
     extension Reactive where Base: UIApplication {
         
         /// Bindable sink for `networkActivityIndicatorVisible`.
-        public var isNetworkActivityIndicatorVisible: Binder<Bool> {
-            return Binder(self.base) { application, active in
+        public var isNetworkActivityIndicatorVisible: UIBindingObserver<Base, Bool> {
+            return UIBindingObserver(UIElement: self.base) { application, active in
                 application.isNetworkActivityIndicatorVisible = active
             }
         }
